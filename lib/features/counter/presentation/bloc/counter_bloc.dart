@@ -24,14 +24,21 @@ class CounterBloc extends Bloc<CounterEvent, CounterState> {
     CounterStarted event,
     Emitter<CounterState> emit,
   ) async {
-    // POARA ESTE DEMO LO DEJAMOS SIMPLE
-    emit(state.copyWith(error: null));
+    emit(state.copyWith(isLoading: true, error: null));
+
+    try {
+      final counter = await getCounter();
+      emit(state.copyWith(value: counter.value, isLoading: false));
+    } catch (e) {
+      emit(state.copyWith(isLoading: false, error: "Error cargando contador"));
+    }
   }
 
   Future<void> _onIncrement(
     CounterIncrementPressed event,
     Emitter<CounterState> emit,
   ) async {
+    print("INCREMENT EVENT LLEGO");
     emit(state.copyWith(isLoading: true, error: null));
     try {
       final counter = await incrementCounter();
